@@ -8,17 +8,22 @@ public class TimeClient {
 	
 	public static void main(String args[]) throws IOException { 
 		TimeClient client = new TimeClient("time.nist.gov");
-		System.out.println(client.getInfo());
+		String test = client.getDate();
+		System.out.println(test);
 	}
 	public TimeClient(String hostName) throws IOException {
 		socket = new Socket(hostName, 13);
-		input = new DataInputStream(socket.getInputStream());
-		input = new DataInputStream(socket.getInputStream());
-		input = new DataInputStream(socket.getInputStream());
 	}
-	public int getInfo() throws IOException {
-		//byte[] info = input.readAllBytes();
-		int info = input.read();
-		return info;
+	public String getDate() throws IOException {
+		InputStream in = socket.getInputStream();
+		String date = "";
+		for(int i=0; i<7; i++) {
+			in.read();
+		}
+		for(int i=0; i<17; i++) {
+			char c = (char)(in.read());
+			date += c;
+		}
+		return date;
 	}
 }
