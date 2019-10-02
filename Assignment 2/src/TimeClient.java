@@ -6,24 +6,35 @@ public class TimeClient {
 	private DataInputStream input = null;
    
 	
-	public static void main(String args[]) throws IOException { 
-		TimeClient client = new TimeClient("time.nist.gov");
-		String test = client.getDate();
-		System.out.println(test);
+	public static void main(String args[]) { 
+		TimeClient client;
+		client = new TimeClient("time.nist.gov");
+		client.getDateString();
 	}
-	public TimeClient(String hostName) throws IOException {
-		socket = new Socket(hostName, 13);
+	public TimeClient(String hostName) {
+		try {
+			socket = new Socket(hostName, 13);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
-	public String getDate() throws IOException {
-		InputStream in = socket.getInputStream();
+	public String getDateString() {
 		String date = "";
-		for(int i=0; i<7; i++) {
-			in.read();
+		try {
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			date = "";
+			for(int i=0; i<7; i++) {
+				in.read();
+			}
+			for(int i=0; i<14; i++) {
+				date += (char)(in.read());
+			}
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
-		for(int i=0; i<17; i++) {
-			char c = (char)(in.read());
-			date += c;
-		}
+		System.out.println(date);
 		return date;
 	}
 }
